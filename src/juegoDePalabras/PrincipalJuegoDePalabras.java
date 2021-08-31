@@ -8,6 +8,7 @@ public class PrincipalJuegoDePalabras {
 		// TODO Auto-generated method stub
 		
 		JOptionPane.showMessageDialog(null, "Mensaje de prueba");
+		JOptionPane.showMessageDialog(null, "Mensaje de prueba 2");
 
 	}
 
