@@ -1,14 +1,21 @@
 package juegoDePalabras;
 
-import javax.swing.JOptionPane;
+import java.awt.EventQueue;
 
 public class PrincipalJuegoDePalabras {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		JOptionPane.showMessageDialog(null, "Mensaje de prueba");
+		EventQueue.invokeLater(new Runnable() {
 
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				//ControlJuegoDePalabras consola = new ControlJuegoDePalabras();
+				
+				GuiJuegoDePalabras miVista = new GuiJuegoDePalabras();			
+			}
+		});;
 	}
 
 }

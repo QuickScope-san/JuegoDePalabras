@@ -14,11 +14,11 @@ public class GestorDeArchivosJuegoDePalabras {
 	private FileWriter fileWriter;
 	private BufferedWriter output;
 	
-	public String AbrirArchivo(Integer numArchivo) {
+	public String AbrirArchivo(Integer numNivel, Integer numSerie) {
 		String salida = "";
 		
 		try {
-			fileRead = new FileReader("src/resources/diccionario"+numArchivo+"");
+			fileRead = new FileReader("src/resources/Nivel"+numNivel+"Serie"+numSerie);
 			input = new BufferedReader(fileRead);
 			
 				String texto = input.readLine();
@@ -46,10 +46,10 @@ public class GestorDeArchivosJuegoDePalabras {
 		return salida;
 	}
 	
-	public void escribirArchivo(String linea) {
+	public void escribirArchivo(String linea, Integer numJugador) {
 		
 		try {
-			fileWriter = new FileWriter("src/resources/diccionario2",true);
+			fileWriter = new FileWriter("src/resources/Jugador"+numJugador,true);
 			output = new BufferedWriter(fileWriter);
 			output.write(linea);
 			output.newLine();
