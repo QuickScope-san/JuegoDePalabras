@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+
 public class PrincipalJuegoDePalabras {
 
 	public static void main(String[] args) {
