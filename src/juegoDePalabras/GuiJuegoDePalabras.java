@@ -61,7 +61,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		this.setSize(new Dimension(1024, 720));
 		this.setTitle("J U E G O   D E   P A L A B R A S");
 		this.setLocationRelativeTo(null);
-		//this.pack();
+		this.pack();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Crea e inicializa GUI y sus componentes.
