@@ -20,7 +20,7 @@ public class GestorDeArchivosJuegoDePalabras {
 		palabras = new ArrayList<String>();
 		palabrasUsuario = new ArrayList<String>();
 		AbrirArchivo(1,1);
-		leerPalabrasJugador();
+		leerUsuario("palabrasUsuario");
 	}
 	
 	public String AbrirArchivo(Integer numNivel, Integer numSerie) {
@@ -60,11 +60,12 @@ public class GestorDeArchivosJuegoDePalabras {
 		return salida;
 	}
 	
-	public String leerPalabrasJugador() {
+	
+	public String leerUsuario(String archivo) {
 		String salida = "";
 		
 		try {
-			fileRead2 = new FileReader("src/archivos/palabrasUsuario");
+			fileRead2 = new FileReader("src/archivos/"+archivo);
 			input2 = new BufferedReader(fileRead2);
 			
 			String texto = input2.readLine();
@@ -96,10 +97,10 @@ public class GestorDeArchivosJuegoDePalabras {
 		
 	}
 	
-	public void escribirArchivo(String linea, Integer numJugador) {
+	public void escribirArchivo(String linea, String archivo) {
 		
 		try {
-			fileWriter = new FileWriter("src/archivos/palabrasUsuario",true);
+			fileWriter = new FileWriter("src/archivos/"+archivo,true);
 			output = new BufferedWriter(fileWriter);
 			output.write(linea);
 			output.newLine();
