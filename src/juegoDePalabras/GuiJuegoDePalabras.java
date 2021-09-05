@@ -10,6 +10,11 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,7 +39,7 @@ public class GuiJuegoDePalabras extends JFrame {
 	private String respuestaLogin;
 	private Titulos lPalabraAMostrar, lAciertos, lFallos, lSerie, lNivel;
 	private JButton bTerminarSerie, bReiniciar, bEstadisticas, bSalir;
-	private JTextField tfEscrituraParaUsuario;
+	private JTextField tfEscrituraParaUsuario, tfAciertos, tfFallos, tfSerie, tfNivel;
 	private JTextArea taPalabrasRecordadas;
 	
 	//Deslizable para el area de texto.
@@ -45,12 +50,19 @@ public class GuiJuegoDePalabras extends JFrame {
 	
 	//Declaracion de paneles auxiliares.
 	private JPanel pAuxInfoPartida;
+	private JPanel pAuxInfoPartidaAciertosTf;
+	private JPanel pAuxInfoPartidaFallosTf;
 	private JPanel pPalabraAcertada;
 	private JPanel pAuxInfoGame;
+	private JPanel pAuxInfoGameSerieTf;
+	private JPanel pAuxInfoGameNivelTf;
 	private JPanel pTextFieldButtons;
 	
 	//Declaracion de objeto de la clase privada fondoJuego.
 	private FondoJuego fondoGame;
+	
+	//Deckaracion de objeto encargado de recibir los eventos producidos en los distintos componentes.
+	private Escuchas escuchas;
 	
 	//Declaracion del gestor de diseño del JFrame.
 	private Container contenedorJFrame;
@@ -92,17 +104,17 @@ public class GuiJuegoDePalabras extends JFrame {
 				new ImageIcon(getClass().getResource("/imagenes/WingsOfFreedoom.png")), true, true);
 		lPalabraAMostrar.setPreferredSize(new Dimension(400, 200));
 		
-		this.lAciertos = new Titulos("Aciertos: ", 30, new Color(0, 0, 0));
-		lAciertos.setPreferredSize(new Dimension(100, 50));
+		this.lAciertos = new Titulos("Aciertos:", 25, new Color(0, 0, 0));
+		lAciertos.setPreferredSize(new Dimension(135, 50));
 		
-		this.lFallos = new Titulos("Fallos: ", 30, new Color(0, 0, 0));
-		lFallos.setPreferredSize(new Dimension(100, 50));
+		this.lFallos = new Titulos("Fallos:", 25, new Color(0, 0, 0));
+		lFallos.setPreferredSize(new Dimension(135, 50));
 		
-		this.lSerie = new Titulos("Serie: ", 30, new Color(255, 255, 255));
-		lSerie.setPreferredSize(new Dimension(100, 50));
+		this.lSerie = new Titulos("Serie:", 30, new Color(255, 255, 255));
+		lSerie.setPreferredSize(new Dimension(120, 50));
 		
-		this.lNivel = new Titulos("Nivel: ", 30, new Color(255, 255, 255));
-		lSerie.setPreferredSize(new Dimension(100, 50));
+		this.lNivel = new Titulos("Nivel:", 30, new Color(255, 255, 255));
+		lNivel.setPreferredSize(new Dimension(120, 50));
 		
 		//Creacion de Buttons.
 		this.bTerminarSerie = new JButton();
@@ -112,6 +124,10 @@ public class GuiJuegoDePalabras extends JFrame {
 
 		//Creacion de TextField's.
 		this.tfEscrituraParaUsuario = new JTextField();
+		this.tfAciertos = new JTextField();
+		this.tfFallos = new JTextField();
+		this.tfSerie = new JTextField();
+		this.tfNivel = new JTextField();
 
 		//Creacion de TextArea's.
 		this.taPalabrasRecordadas = new JTextArea();
@@ -127,12 +143,23 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Creacion de paneles auxiliares.
 		this.pAuxInfoPartida = new JPanel();
+		this.pAuxInfoPartidaAciertosTf = new JPanel();
+		this.pAuxInfoPartidaFallosTf = new JPanel();
 		this.pPalabraAcertada = new JPanel();
 		this.pAuxInfoGame = new JPanel();
+		this.pAuxInfoGameSerieTf = new JPanel();
+		this.pAuxInfoGameNivelTf = new JPanel();
 		this.pTextFieldButtons = new JPanel();
 		
 		//Creacion del objeto encargado de modificar el fondo por defecto de la interfaz grafica.
-		fondoGame = new FondoJuego();	
+		fondoGame = new FondoJuego();
+		
+		//Agregacion de escuchas.
+		tfEscrituraParaUsuario.addKeyListener(escuchas);
+		bTerminarSerie.addActionListener(escuchas);
+		bReiniciar.addActionListener(escuchas);
+		bEstadisticas.addActionListener(escuchas);
+		bSalir.addActionListener(escuchas);
 		
 		//Creacion del gestor de diseño del JFrame.
 		contenedorJFrame = getContentPane();
@@ -154,8 +181,12 @@ public class GuiJuegoDePalabras extends JFrame {
 		pInteraccionUsuario.setLayout(new FlowLayout());
 		
 		pAuxInfoPartida.setLayout(new BorderLayout());
+		pAuxInfoPartidaAciertosTf.setLayout(new FlowLayout());
+		pAuxInfoPartidaFallosTf.setLayout(new FlowLayout());
 		pPalabraAcertada.setLayout(new FlowLayout());
 		pAuxInfoGame.setLayout(new FlowLayout());
+		pAuxInfoGameSerieTf.setLayout(new FlowLayout());
+		pAuxInfoGameNivelTf.setLayout(new FlowLayout());
 		pTextFieldButtons.setLayout(new FlowLayout());
 		
 		//Agregacion del panel de juego al contenedor principical del JFrame.
@@ -163,46 +194,104 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Agregacion de componentes a paneles.
 		
-		pAuxInfoPartida.setBackground(new Color(255, 255, 255));
-		pAuxInfoPartida.add(lAciertos, BorderLayout.NORTH); pAuxInfoPartida.add(lFallos, BorderLayout.CENTER);
+		tfAciertos.setPreferredSize(new Dimension(30, 30));
+		tfAciertos.setBackground(new Color(0, 0, 0, 250));
+		tfAciertos.setForeground(new Color(255, 255, 255));
+		tfAciertos.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
+		tfFallos.setPreferredSize(new Dimension(30, 30));
+		tfFallos.setBackground(new Color(0, 0, 0, 250));
+		tfFallos.setForeground(new Color(255, 255, 255));
+		tfFallos.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
+		
+		tfSerie.setPreferredSize(new Dimension(30, 30));
+		tfSerie.setBackground(new Color(255, 255, 255, 250));
+		tfSerie.setForeground(new Color(0, 0, 0));
+		tfSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
+		tfNivel.setPreferredSize(new Dimension(30, 30));
+		tfNivel.setBackground(new Color(255, 255, 255, 250));
+		tfNivel.setForeground(new Color(0, 0, 0));
+		tfNivel.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
+		
+		pAuxInfoPartida.setBackground(new Color(255, 255, 255, 150));
+		pAuxInfoPartidaAciertosTf.setPreferredSize(new Dimension(100, 50));
+		pAuxInfoPartidaAciertosTf.add(lAciertos); pAuxInfoPartidaAciertosTf.add(tfAciertos);
+		pAuxInfoPartidaAciertosTf.setOpaque(false);
+		pAuxInfoPartidaFallosTf.setPreferredSize(new Dimension(100, 50));
+		pAuxInfoPartidaFallosTf.add(lFallos); pAuxInfoPartidaFallosTf.add(tfFallos);
+		pAuxInfoPartidaFallosTf.setOpaque(false);
+		pAuxInfoPartida.add(pAuxInfoPartidaAciertosTf, BorderLayout.SOUTH); pAuxInfoPartida.add(pAuxInfoPartidaFallosTf, BorderLayout.CENTER);
 		pAuxInfoPartida.setPreferredSize(new Dimension(200, 100));
 		
 		pInfoPartida.add(lPalabraAMostrar);
 		pInfoPartida.add(pAuxInfoPartida);
-		pInfoPartida.setBackground(new Color(0, 0, 0));
-		pInfoPartida.setPreferredSize(new Dimension(670, 220));
+		pInfoPartida.setBackground(new Color(0, 0, 0, 220));
+		pInfoPartida.setPreferredSize(new Dimension(715, 220));
 		pPalabraAcertada.add(pInfoPartida);
 		pPalabraAcertada.setOpaque(false);
 		fondoGame.add(pPalabraAcertada, BorderLayout.NORTH);
 		
 		taPalabrasRecordadas.setPreferredSize(new Dimension(500, 500));
-		taPalabrasRecordadas.setBackground(new Color(46, 240, 152));
+		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 150));
+		taPalabrasRecordadas.setForeground(new Color(255, 255, 255));
+		spDeslizable.setBackground(new Color(0, 0, 0, 150));
+		spDeslizable.setForeground(new Color(255, 255, 255));
 		pTextArea.add(spDeslizable);
 		pTextArea.setOpaque(false);
 		fondoGame.add(pTextArea, BorderLayout.CENTER);
 		
-		pInfoGame.add(lSerie, BorderLayout.SOUTH); pInfoGame.add(lNivel, BorderLayout.CENTER);
-		pInfoGame.setPreferredSize(new Dimension(200, 100));
-		pInfoGame.setBackground(new Color(0, 0, 0));
+		pAuxInfoGameSerieTf.setOpaque(false);
+		pAuxInfoGameSerieTf.setPreferredSize(new Dimension(200, 50));
+		pAuxInfoGameSerieTf.add(lSerie); pAuxInfoGameSerieTf.add(tfSerie);
+		pAuxInfoGameNivelTf.setOpaque(false);
+		pAuxInfoGameNivelTf.setPreferredSize(new Dimension(200, 50));
+		pAuxInfoGameNivelTf.add(lNivel); pAuxInfoGameNivelTf.add(tfNivel);
+		pInfoGame.add(pAuxInfoGameSerieTf, BorderLayout.NORTH); pInfoGame.add(pAuxInfoGameNivelTf, BorderLayout.CENTER);
+		pInfoGame.setPreferredSize(new Dimension(200, 120));
+		pInfoGame.setBackground(new Color(0, 0, 0, 250));
 		pAuxInfoGame.add(pInfoGame);
 		pAuxInfoGame.setOpaque(false);
 		fondoGame.add(pAuxInfoGame, BorderLayout.EAST);
 		
-		tfEscrituraParaUsuario.setPreferredSize(new Dimension(150, 70));
-		tfEscrituraParaUsuario.setBackground(new Color(0, 0, 0, 64));
-		tfEscrituraParaUsuario.setFont(new Font(Font.SANS_SERIF, Font.BOLD+Font.ITALIC, 25));
+		tfEscrituraParaUsuario.setPreferredSize(new Dimension(240, 70));
+		tfEscrituraParaUsuario.setBackground(new Color(0, 0, 0, 250));
+		tfEscrituraParaUsuario.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 25));
 		tfEscrituraParaUsuario.setForeground(new Color(255, 255, 255));
-		bTerminarSerie.setOpaque(false);
-		bTerminarSerie.setContentAreaFilled(false);
-		bTerminarSerie.setIcon(new ImageIcon(getClass().getResource("/imagenes/arimaKousei.png")));
+		bTerminarSerie.setIcon(new ImageIcon(getClass().getResource("/imagenes/tiempoParcial.png")));
 		bTerminarSerie.setText("Terminar Serie");
-		bTerminarSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 15));
-		bTerminarSerie.setForeground(new Color(255, 255, 255));
+		bTerminarSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bTerminarSerie.setBackground(new Color(88, 247, 205));
+		bTerminarSerie.setForeground(new Color(0, 0, 0));
 		bTerminarSerie.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bTerminarSerie.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		bTerminarSerie.setPreferredSize(new Dimension(200, 100));
+		bTerminarSerie.setPreferredSize(new Dimension(220, 70));
+		bReiniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/reiniciar.png")));
+		bReiniciar.setText("Reiniciar");
+		bReiniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bReiniciar.setBackground(new Color(88, 247, 205));
+		bReiniciar.setForeground(new Color(0, 0, 0));
+		bReiniciar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		bReiniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		bReiniciar.setPreferredSize(new Dimension(160, 70));
+		bEstadisticas.setIcon(new ImageIcon(getClass().getResource("/imagenes/estadisticas.png")));
+		bEstadisticas.setText("Estadisticas");
+		bEstadisticas.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bEstadisticas.setBackground(new Color(88, 247, 205));
+		bEstadisticas.setForeground(new Color(0, 0, 0));
+		bEstadisticas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		bEstadisticas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		bEstadisticas.setPreferredSize(new Dimension(200, 70));
+		bSalir.setIcon(new ImageIcon(getClass().getResource("/imagenes/salir.png")));
+		bSalir.setText("Salir");
+		bSalir.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bSalir.setBackground(new Color(88, 247, 205));
+		bSalir.setForeground(new Color(0, 0, 0));
+		bSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		bSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		bSalir.setPreferredSize(new Dimension(100, 70));
 		pInteraccionUsuario.add(tfEscrituraParaUsuario); pInteraccionUsuario.add(bTerminarSerie);
-		pInteraccionUsuario.setPreferredSize(new Dimension(800, 100));
+		pInteraccionUsuario.add(bReiniciar); pInteraccionUsuario.add(bEstadisticas); 
+		pInteraccionUsuario.add(bSalir);
+		pInteraccionUsuario.setPreferredSize(new Dimension(1020, 100));
 		pInteraccionUsuario.setOpaque(false);
 		pTextFieldButtons.add(pInteraccionUsuario);
 		pTextFieldButtons.setOpaque(false);
@@ -245,17 +334,6 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 	}
 	
-	private void cambiarSerie() {
-		
-		
-		
-	}
-	
-	private void cambiarNivel() {
-		
-		
-		
-	}
 	
 	private class FondoJuego extends JPanel{
 		
@@ -278,6 +356,26 @@ public class GuiJuegoDePalabras extends JFrame {
 			super.paint(g);
 			
 		}
+		
+	}
+	
+	private class Escuchas extends KeyAdapter implements ActionListener{
+		
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+			
+			
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			
+			
+		}
+		
+		
 		
 	}
 
