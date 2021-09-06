@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,7 +40,7 @@ public class GuiJuegoDePalabras extends JFrame {
 	//Declaracion de atributos.
 	private String respuestaLogin;
 	private Titulos lPalabraAMostrar, lAciertos, lFallos, lSerie, lNivel;
-	private JButton bTerminarSerie, bReiniciar, bEstadisticas, bSalir;
+	private JButton bTerminarSerie, bReiniciar, bEstadisticas, bSalir, bIniciar;
 	private JTextField tfEscrituraParaUsuario, tfAciertos, tfFallos, tfSerie, tfNivel;
 	private JTextArea taPalabrasRecordadas;
 	
@@ -118,9 +120,12 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Creacion de Buttons.
 		this.bTerminarSerie = new JButton();
+		bTerminarSerie.setVisible(false);
 		this.bReiniciar = new JButton();
+		bReiniciar.setVisible(false);
 		this.bEstadisticas = new JButton();
 		this.bSalir = new JButton();
+		this.bIniciar = new JButton();
 
 		//Creacion de TextField's.
 		this.tfEscrituraParaUsuario = new JTextField();
@@ -154,12 +159,16 @@ public class GuiJuegoDePalabras extends JFrame {
 		//Creacion del objeto encargado de modificar el fondo por defecto de la interfaz grafica.
 		fondoGame = new FondoJuego();
 		
+		//Creacion de Escuchas.
+		this.escuchas = new Escuchas();
+		
 		//Agregacion de escuchas.
 		tfEscrituraParaUsuario.addKeyListener(escuchas);
 		bTerminarSerie.addActionListener(escuchas);
 		bReiniciar.addActionListener(escuchas);
 		bEstadisticas.addActionListener(escuchas);
 		bSalir.addActionListener(escuchas);
+		bIniciar.addActionListener(escuchas);
 		
 		//Creacion del gestor de diseño del JFrame.
 		contenedorJFrame = getContentPane();
@@ -224,14 +233,14 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		pInfoPartida.add(lPalabraAMostrar);
 		pInfoPartida.add(pAuxInfoPartida);
-		pInfoPartida.setBackground(new Color(0, 0, 0, 220));
+		pInfoPartida.setBackground(new Color(0, 0, 0, 250));
 		pInfoPartida.setPreferredSize(new Dimension(715, 220));
 		pPalabraAcertada.add(pInfoPartida);
 		pPalabraAcertada.setOpaque(false);
 		fondoGame.add(pPalabraAcertada, BorderLayout.NORTH);
 		
 		taPalabrasRecordadas.setPreferredSize(new Dimension(500, 500));
-		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 150));
+		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 250));
 		taPalabrasRecordadas.setForeground(new Color(255, 255, 255));
 		spDeslizable.setBackground(new Color(0, 0, 0, 150));
 		spDeslizable.setForeground(new Color(255, 255, 255));
@@ -265,7 +274,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		bTerminarSerie.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bTerminarSerie.setPreferredSize(new Dimension(220, 70));
 		bReiniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/reiniciar.png")));
-		bReiniciar.setText("Reiniciar");
+		bReiniciar.setText("Reset");
 		bReiniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bReiniciar.setBackground(new Color(88, 247, 205));
 		bReiniciar.setForeground(new Color(0, 0, 0));
@@ -273,7 +282,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		bReiniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bReiniciar.setPreferredSize(new Dimension(160, 70));
 		bEstadisticas.setIcon(new ImageIcon(getClass().getResource("/imagenes/estadisticas.png")));
-		bEstadisticas.setText("Estadisticas");
+		bEstadisticas.setText("Stats");
 		bEstadisticas.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bEstadisticas.setBackground(new Color(88, 247, 205));
 		bEstadisticas.setForeground(new Color(0, 0, 0));
@@ -281,15 +290,26 @@ public class GuiJuegoDePalabras extends JFrame {
 		bEstadisticas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bEstadisticas.setPreferredSize(new Dimension(200, 70));
 		bSalir.setIcon(new ImageIcon(getClass().getResource("/imagenes/salir.png")));
-		bSalir.setText("Salir");
+		bSalir.setText("Exit");
 		bSalir.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bSalir.setBackground(new Color(88, 247, 205));
 		bSalir.setForeground(new Color(0, 0, 0));
 		bSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bSalir.setPreferredSize(new Dimension(100, 70));
-		pInteraccionUsuario.add(tfEscrituraParaUsuario); pInteraccionUsuario.add(bTerminarSerie);
-		pInteraccionUsuario.add(bReiniciar); pInteraccionUsuario.add(bEstadisticas); 
+		
+		bIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/swords.png")));
+		bIniciar.setText("Start");
+		bIniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bIniciar.setBackground(new Color(88, 247, 205));
+		bIniciar.setForeground(new Color(0, 0, 0));
+		bIniciar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		bIniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		bIniciar.setPreferredSize(new Dimension(100, 70));
+		
+		pInteraccionUsuario.add(tfEscrituraParaUsuario); pInteraccionUsuario.add(bIniciar);
+		pInteraccionUsuario.add(bTerminarSerie); pInteraccionUsuario.add(bReiniciar); 
+		pInteraccionUsuario.add(bEstadisticas); 
 		pInteraccionUsuario.add(bSalir);
 		pInteraccionUsuario.setPreferredSize(new Dimension(1020, 100));
 		pInteraccionUsuario.setOpaque(false);
@@ -302,7 +322,7 @@ public class GuiJuegoDePalabras extends JFrame {
 	
 	private void loginUsuario() {
 		
-		leerInformacionUsuario();
+		//leerInformacionUsuario();
 		
 		//Respuesta del usuario.
 		respuestaLogin = (String)JOptionPane.showInputDialog(null, "Digite su usuario", "L O G I N", 
@@ -316,12 +336,48 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 	}
 	
+	/*
+	
 	private void leerInformacionUsuario() {
 		
+		archivosJuegoDePalabras.leerUsuario("listaUsuarios");
 		
+		ArrayList <String> usuarios = new ArrayList<String>();
+		
+		usuarios = archivosJuegoDePalabras.getPalabrasUsuario();
+		
+		if(usuarios.size() < 3) {
+			
+			for (int i = 0; i < usuarios.size(); i++) {
+				
+				if(respuestaLogin.equalsIgnoreCase(usuarios.get(i))) {
+					
+					JOptionPane.showMessageDialog(null, "Hi Master...", "¡U s u a r i o  A u t e n t i c a d o!",
+							JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
+									getResource("/imagenes/levi.gif")));
+					
+				} else {
+					
+					JOptionPane.showMessageDialog(null, "Usuario Creado", "H i  T h e r e!",
+							JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
+									getResource("/imagenes/leviAttack.gif")));
+					
+					archivosJuegoDePalabras.escribirArchivo(respuestaLogin, "listaUsuarios");
+					
+				}
+				
+			}
+			
+		} else {
+			
+			JOptionPane.showMessageDialog(null, "Numero máximo de usuarios alcanzados", 
+					"A C T U A L I Z A  A  B A S E  D E  D A T O S", JOptionPane.ERROR_MESSAGE, 
+					new ImageIcon(getClass().getResource("/imagenes/error.png")));
+			
+		}
 		
 	}
-	
+	*/
 	private void escribirInformacionUsuario() {
 		
 		
@@ -371,7 +427,13 @@ public class GuiJuegoDePalabras extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			
+			if(e.getSource() == bIniciar) {
+				
+				bIniciar.setVisible(false);
+				bTerminarSerie.setVisible(true);
+				bReiniciar.setVisible(true);
+				
+			}
 			
 		}
 		
