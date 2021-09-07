@@ -83,6 +83,9 @@ public class GuiJuegoDePalabras extends JFrame {
 		//Creacion de icono de logeo.
 		this.iLogeo = new ImageIcon(CHITANDAICON);
 		
+		//Crea e inicializa GUI y sus componentes.
+		initJuegoDePalabras();
+		
 		//Pantalla de login.
 		loginUsuario();
 		
@@ -93,9 +96,6 @@ public class GuiJuegoDePalabras extends JFrame {
 		this.setTitle("J U E G O   D E   P A L A B R A S");
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//Crea e inicializa GUI y sus componentes.
-		initJuegoDePalabras();
 		
 	}
 
@@ -322,62 +322,93 @@ public class GuiJuegoDePalabras extends JFrame {
 	
 	private void loginUsuario() {
 		
-		//leerInformacionUsuario();
-		
 		//Respuesta del usuario.
 		respuestaLogin = (String)JOptionPane.showInputDialog(null, "Digite su usuario", "L O G I N", 
-													JOptionPane.INFORMATION_MESSAGE, 
-													iLogeo,
-													null, "");
+				JOptionPane.INFORMATION_MESSAGE, 
+				iLogeo,
+				null, "");
 		
-		
-		
-		
+		leerInformacionUsuario();
 		
 	}
 	
-	/*
+	private boolean compararUsuarios(ArrayList<String> list, String elemento) {
+		
+		return list.contains(elemento);
+		
+	}
 	
 	private void leerInformacionUsuario() {
 		
-		archivosJuegoDePalabras.leerUsuario("listaUsuarios");
-		
 		ArrayList <String> usuarios = new ArrayList<String>();
+		
+		archivosJuegoDePalabras.getPalabrasUsuario().clear();
+		
+		archivosJuegoDePalabras.leerUsuario("listaUsuarios");
 		
 		usuarios = archivosJuegoDePalabras.getPalabrasUsuario();
 		
-		if(usuarios.size() < 3) {
+		if((respuestaLogin != null) && !respuestaLogin.equals("")) {
 			
-			for (int i = 0; i < usuarios.size(); i++) {
+			if(usuarios.size() < 3) {
+
+					if(compararUsuarios(usuarios, respuestaLogin)) {
+
+						JOptionPane.showMessageDialog(null, "Hi Master...", "¡U s u a r i o  A u t e n t i c a d o!",
+								JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
+										getResource("/imagenes/levi.gif")));
+
+					} else{
+
+						JOptionPane.showMessageDialog(null, "Usuario Creado", "H i  T h e r e!",
+								JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
+										getResource("/imagenes/leviAttack.gif")));
+
+						archivosJuegoDePalabras.escribirArchivo(respuestaLogin, "listaUsuarios");
+
+					}
+
+			} else {
+
+				JOptionPane.showMessageDialog(null, "Numero máximo de usuarios alcanzados, comprobando si existe"
+						+ " su usuario", 
+						"C O M P R O B A C I O N  D E  D A T O S", JOptionPane.ERROR_MESSAGE, 
+						new ImageIcon(getClass().getResource("/imagenes/error.png")));
 				
-				if(respuestaLogin.equalsIgnoreCase(usuarios.get(i))) {
-					
-					JOptionPane.showMessageDialog(null, "Hi Master...", "¡U s u a r i o  A u t e n t i c a d o!",
-							JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
-									getResource("/imagenes/levi.gif")));
-					
-				} else {
-					
-					JOptionPane.showMessageDialog(null, "Usuario Creado", "H i  T h e r e!",
-							JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
-									getResource("/imagenes/leviAttack.gif")));
-					
-					archivosJuegoDePalabras.escribirArchivo(respuestaLogin, "listaUsuarios");
-					
-				}
+				archivoUsuariosLleno(usuarios, respuestaLogin);
+				
+				System.out.println(usuarios.size());
+				
+				
 				
 			}
 			
 		} else {
 			
-			JOptionPane.showMessageDialog(null, "Numero máximo de usuarios alcanzados", 
-					"A C T U A L I Z A  A  B A S E  D E  D A T O S", JOptionPane.ERROR_MESSAGE, 
-					new ImageIcon(getClass().getResource("/imagenes/error.png")));
+			System.out.println(usuarios.size());
+			
+			System.exit(0);
 			
 		}
 		
 	}
-	*/
+	
+	private void archivoUsuariosLleno(ArrayList<String>lista, String dato) {
+		
+		if((lista.size() == 3) && compararUsuarios(lista, dato)) {
+
+			JOptionPane.showMessageDialog(null, "Hi Master...", "¡U s u a r i o  A u t e n t i c a d o!",
+					JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().
+							getResource("/imagenes/levi.gif")));
+
+		} else {
+			
+			System.exit(0);
+			
+		}
+		
+	}
+	
 	private void escribirInformacionUsuario() {
 		
 		
