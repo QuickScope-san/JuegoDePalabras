@@ -16,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,10 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.Timer;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 public class GuiJuegoDePalabras extends JFrame {
 	
@@ -67,7 +64,7 @@ public class GuiJuegoDePalabras extends JFrame {
 	private FondoJuego fondoGame;
 	
 	//Deckaracion de objeto encargado de recibir los eventos producidos en los distintos componentes.
-	private Escucha escuchas;
+	private Escuchas escuchas;
 	
 	//Declaracion del gestor de diseño del JFrame.
 	private Container contenedorJFrame;
@@ -77,12 +74,6 @@ public class GuiJuegoDePalabras extends JFrame {
 	
 	//Declaracion de objeto de la clase ControlJuegoDePalabras.
 	private ControlJuegoDePalabras logicaJuegoDePalabras;
-	
-	//Declaracion del timer
-	private Timer timer;
-	
-	//Ventanas
-	private JFrame vistaGUI, newVista;
 	
 	public GuiJuegoDePalabras(){
 		
@@ -94,7 +85,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Crea e inicializa GUI y sus componentes.
 		initJuegoDePalabras();
-				
+		
 		//Pantalla de login.
 		loginUsuario();
 		
@@ -109,15 +100,9 @@ public class GuiJuegoDePalabras extends JFrame {
 	}
 
 	public void initJuegoDePalabras() {
-		
-		//Create Escucha and other components
-		escuchas = new Escucha();
-		timer = new Timer(2000,escuchas);
-		vistaGUI=this;
-		newVista = new JFrame();
 
 		//Creacion de Label's.
-		this.lPalabraAMostrar = new Titulos("¿INICIAR?", 35, new Color(255, 255, 255), 
+		this.lPalabraAMostrar = new Titulos("INICIANDO", 35, new Color(255, 255, 255), 
 				new ImageIcon(getClass().getResource("/imagenes/WingsOfFreedoom.png")), true, true);
 		lPalabraAMostrar.setPreferredSize(new Dimension(400, 200));
 		
@@ -135,7 +120,9 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Creacion de Buttons.
 		this.bTerminarSerie = new JButton();
+		bTerminarSerie.setVisible(false);
 		this.bReiniciar = new JButton();
+		bReiniciar.setVisible(false);
 		this.bEstadisticas = new JButton();
 		this.bSalir = new JButton();
 		this.bIniciar = new JButton();
@@ -172,27 +159,29 @@ public class GuiJuegoDePalabras extends JFrame {
 		//Creacion del objeto encargado de modificar el fondo por defecto de la interfaz grafica.
 		fondoGame = new FondoJuego();
 		
+		//Creacion de Escuchas.
+		this.escuchas = new Escuchas();
+		
 		//Agregacion de escuchas.
 		tfEscrituraParaUsuario.addKeyListener(escuchas);
 		bTerminarSerie.addActionListener(escuchas);
-		bIniciar.addActionListener(escuchas);
 		bReiniciar.addActionListener(escuchas);
 		bEstadisticas.addActionListener(escuchas);
 		bSalir.addActionListener(escuchas);
-
+		bIniciar.addActionListener(escuchas);
 		
-		tfEscrituraParaUsuario.setBorder(new TitledBorder("Escribir"));
 		//Creacion del gestor de diseño del JFrame.
 		contenedorJFrame = getContentPane();
-		
-		//Modificaciones de los layouts de los distintos componentes que hay en la interfaz grafica.
-		contenedorJFrame.setLayout(new BorderLayout());
 		
 		//Creacion del objeto encargado de comunicarse con los archivos de la clase.
 		archivosJuegoDePalabras = new GestorDeArchivosJuegoDePalabras();
 		
 		//Creacion del objeto encargado de comunicarse con la logica de la clase.
 		logicaJuegoDePalabras = new ControlJuegoDePalabras();
+		
+		//Modificaciones de los layouts de los distintos componentes que hay en la interfaz grafica.
+		contenedorJFrame.setLayout(new BorderLayout());
+		
 		fondoGame.setLayout(new BorderLayout());
 		
 		pInfoPartida.setLayout(new FlowLayout());
@@ -218,25 +207,19 @@ public class GuiJuegoDePalabras extends JFrame {
 		tfAciertos.setBackground(new Color(0, 0, 0, 250));
 		tfAciertos.setForeground(new Color(255, 255, 255));
 		tfAciertos.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
-		tfAciertos.setEditable(false);
-		
 		tfFallos.setPreferredSize(new Dimension(30, 30));
 		tfFallos.setBackground(new Color(0, 0, 0, 250));
 		tfFallos.setForeground(new Color(255, 255, 255));
 		tfFallos.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
-		tfFallos.setEditable(false);
 		
 		tfSerie.setPreferredSize(new Dimension(30, 30));
 		tfSerie.setBackground(new Color(255, 255, 255, 250));
 		tfSerie.setForeground(new Color(0, 0, 0));
 		tfSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
-		tfSerie.setEditable(false);
-		
 		tfNivel.setPreferredSize(new Dimension(30, 30));
 		tfNivel.setBackground(new Color(255, 255, 255, 250));
 		tfNivel.setForeground(new Color(0, 0, 0));
 		tfNivel.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 20));
-		tfNivel.setEditable(false);
 		
 		pAuxInfoPartida.setBackground(new Color(255, 255, 255, 150));
 		pAuxInfoPartidaAciertosTf.setPreferredSize(new Dimension(100, 50));
@@ -250,18 +233,15 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		pInfoPartida.add(lPalabraAMostrar);
 		pInfoPartida.add(pAuxInfoPartida);
-		pInfoPartida.setBackground(new Color(0, 0, 0, 150));
-		pInfoPartida.setPreferredSize(new Dimension(860, 220));
-		pInfoPartida.setBorder(new TitledBorder("Palabras"));
+		pInfoPartida.setBackground(new Color(0, 0, 0, 250));
+		pInfoPartida.setPreferredSize(new Dimension(715, 220));
 		pPalabraAcertada.add(pInfoPartida);
 		pPalabraAcertada.setOpaque(false);
 		fondoGame.add(pPalabraAcertada, BorderLayout.NORTH);
 		
-		taPalabrasRecordadas.setPreferredSize(new Dimension(645, 500));
-		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 0));
+		taPalabrasRecordadas.setPreferredSize(new Dimension(500, 500));
+		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 250));
 		taPalabrasRecordadas.setForeground(new Color(255, 255, 255));
-		taPalabrasRecordadas.setBorder(new TitledBorder("Palabras del Usuario"));
-		taPalabrasRecordadas.setEditable(false);
 		spDeslizable.setBackground(new Color(0, 0, 0, 150));
 		spDeslizable.setForeground(new Color(255, 255, 255));
 		pTextArea.add(spDeslizable);
@@ -274,7 +254,6 @@ public class GuiJuegoDePalabras extends JFrame {
 		pAuxInfoGameNivelTf.setOpaque(false);
 		pAuxInfoGameNivelTf.setPreferredSize(new Dimension(200, 50));
 		pAuxInfoGameNivelTf.add(lNivel); pAuxInfoGameNivelTf.add(tfNivel);
-		
 		pInfoGame.add(pAuxInfoGameSerieTf, BorderLayout.NORTH); pInfoGame.add(pAuxInfoGameNivelTf, BorderLayout.CENTER);
 		pInfoGame.setPreferredSize(new Dimension(200, 120));
 		pInfoGame.setBackground(new Color(0, 0, 0, 250));
@@ -282,72 +261,64 @@ public class GuiJuegoDePalabras extends JFrame {
 		pAuxInfoGame.setOpaque(false);
 		fondoGame.add(pAuxInfoGame, BorderLayout.EAST);
 		
-		tfEscrituraParaUsuario.setPreferredSize(new Dimension(527, 70));
-		tfEscrituraParaUsuario.setBackground(new Color(0,0,0,250));
+		tfEscrituraParaUsuario.setPreferredSize(new Dimension(240, 70));
+		tfEscrituraParaUsuario.setBackground(new Color(0, 0, 0, 250));
 		tfEscrituraParaUsuario.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 25));
-		tfEscrituraParaUsuario.setForeground(Color.white);
-		tfEscrituraParaUsuario.setEditable(false);
-		tfEscrituraParaUsuario.setText("Escribir aquí...");
-		
+		tfEscrituraParaUsuario.setForeground(new Color(255, 255, 255));
 		bTerminarSerie.setIcon(new ImageIcon(getClass().getResource("/imagenes/tiempoParcial.png")));
 		bTerminarSerie.setText("Terminar Serie");
-		bTerminarSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 18));
+		bTerminarSerie.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bTerminarSerie.setBackground(new Color(88, 247, 205));
 		bTerminarSerie.setForeground(new Color(0, 0, 0));
 		bTerminarSerie.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bTerminarSerie.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		bTerminarSerie.setPreferredSize(new Dimension(200, 70));
-		bTerminarSerie.setVisible(false);
-		
-		//bIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/iniciar.png")));
-		bIniciar.setText("Iniciar");
-		bIniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 18));
-		bIniciar.setBackground(new Color(88, 247, 205));
-		bIniciar.setForeground(new Color(0, 0, 0));
-		bIniciar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		bIniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		bIniciar.setPreferredSize(new Dimension(115, 70));
-		
+		bTerminarSerie.setPreferredSize(new Dimension(220, 70));
 		bReiniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/reiniciar.png")));
-		bReiniciar.setText("Reiniciar");
-		bReiniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 18));
+		bReiniciar.setText("Reset");
+		bReiniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bReiniciar.setBackground(new Color(88, 247, 205));
 		bReiniciar.setForeground(new Color(0, 0, 0));
 		bReiniciar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bReiniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bReiniciar.setPreferredSize(new Dimension(160, 70));
-		bReiniciar.setVisible(false);
-		
 		bEstadisticas.setIcon(new ImageIcon(getClass().getResource("/imagenes/estadisticas.png")));
 		bEstadisticas.setText("Stats");
-		bEstadisticas.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 18));
+		bEstadisticas.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bEstadisticas.setBackground(new Color(88, 247, 205));
 		bEstadisticas.setForeground(new Color(0, 0, 0));
 		bEstadisticas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bEstadisticas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		bEstadisticas.setPreferredSize(new Dimension(100, 70));
-		
+		bEstadisticas.setPreferredSize(new Dimension(200, 70));
 		bSalir.setIcon(new ImageIcon(getClass().getResource("/imagenes/salir.png")));
-		bSalir.setText("Salir");
-		bSalir.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 18));
+		bSalir.setText("Exit");
+		bSalir.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
 		bSalir.setBackground(new Color(88, 247, 205));
 		bSalir.setForeground(new Color(0, 0, 0));
 		bSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 		bSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		bSalir.setPreferredSize(new Dimension(100, 70));
 		
+		bIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/swords.png")));
+		bIniciar.setText("Start");
+		bIniciar.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 22));
+		bIniciar.setBackground(new Color(88, 247, 205));
+		bIniciar.setForeground(new Color(0, 0, 0));
+		bIniciar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+		bIniciar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		bIniciar.setPreferredSize(new Dimension(100, 70));
+		
 		pInteraccionUsuario.add(tfEscrituraParaUsuario); pInteraccionUsuario.add(bIniciar);
 		pInteraccionUsuario.add(bTerminarSerie); pInteraccionUsuario.add(bReiniciar); 
 		pInteraccionUsuario.add(bEstadisticas); 
-		pInteraccionUsuario.add(bSalir); 
+		pInteraccionUsuario.add(bSalir);
 		pInteraccionUsuario.setPreferredSize(new Dimension(1020, 100));
 		pInteraccionUsuario.setOpaque(false);
 		pTextFieldButtons.add(pInteraccionUsuario);
 		pTextFieldButtons.setOpaque(false);
 		fondoGame.add(pTextFieldButtons, BorderLayout.SOUTH);
 		
+		
 	}
-	
 	
 	private void loginUsuario() {
 		
@@ -438,6 +409,18 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 	}
 	
+	private void escribirInformacionUsuario() {
+		
+		
+		
+	}
+	
+	private void vaciarAreaDeTexto() {
+		
+		
+		
+	}
+	
 	
 	private class FondoJuego extends JPanel{
 		
@@ -463,202 +446,29 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 	}
 	
-	private void iniciar() {
-		pInfoPartida.setBackground(new Color(0, 0, 0, 250));
-		taPalabrasRecordadas.setBackground(new Color(0,0,0,250));
-		tfEscrituraParaUsuario.setPreferredSize(new Dimension(275, 70));
-		tfEscrituraParaUsuario.setText("");
-		archivosJuegoDePalabras.getPalabrasUsuario().clear();
-		archivosJuegoDePalabras.vaciarArchivo();
-		taPalabrasRecordadas.setText(archivosJuegoDePalabras.leerUsuario("palabrasUsuario"));
-		timer.start();
-	}
-	
-	private boolean compararPalabras() {
-		return archivosJuegoDePalabras.getPalabras().contains(archivosJuegoDePalabras.getPalabrasUsuario().get(archivosJuegoDePalabras.getPalabrasUsuario().size()-1).toLowerCase());
-	}
-	
-	private class Escucha implements KeyListener, ActionListener{
-		int indice = -1,identificadorTerminarSerie = 0, comparacion = 0, mostrarPalabra = 0, contador=0;;
+	private class Escuchas extends KeyAdapter implements ActionListener{
+		
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+			
+			
+		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getSource() == bSalir) {
-				System.exit(0);
-			}
+			
 			if(e.getSource() == bIniciar) {
-				int option = JOptionPane.showConfirmDialog(null, "ESPERA A QUE SE MUESTREN TODAS LAS PALABRAS PARA PODER ESCRIBIR","Espera",JOptionPane.OK_CANCEL_OPTION);
-				if(option == JOptionPane.OK_OPTION) {
-					iniciar();
-				}
-				else {
-					iniciar();
-				}
-				bReiniciar.setVisible(true);
-				bTerminarSerie.setVisible(true);
+				
 				bIniciar.setVisible(false);
+				bTerminarSerie.setVisible(true);
+				bReiniciar.setVisible(true);
 				
-				tfAciertos.setText(String.valueOf(logicaJuegoDePalabras.getAciertos()));
-				tfFallos.setText(String.valueOf(logicaJuegoDePalabras.getFallos()));
-				tfNivel.setText(String.valueOf(logicaJuegoDePalabras.getNivel()));
-				tfSerie.setText(String.valueOf(logicaJuegoDePalabras.getSerie()));
 			}
-			if(e.getSource() == bReiniciar) {
-				newVista.dispose();
-				PrincipalJuegoDePalabras.main(null);
-				vistaGUI.removeAll();
-				vistaGUI.setVisible(false);
-			}
-			if(e.getSource() == bTerminarSerie) {
-				logicaJuegoDePalabras.terminarSerieNivel();
-				identificadorTerminarSerie++;
-				logicaJuegoDePalabras.perderTerminarSerie(identificadorTerminarSerie);
-				identificadorTerminarSerie=0;
-				comparacion = 0;
-				mostrarPalabra=0;
-				tfEscrituraParaUsuario.setEditable(false); 
-				timer.restart();
-				if(identificadorTerminarSerie==1) {
-					if(logicaJuegoDePalabras.condicionPerder(comparacion)){
-						logicaJuegoDePalabras.pasarSerie();
-						logicaJuegoDePalabras.pasarNivel();
-						JOptionPane.showMessageDialog(null, "¡Perdiste! Palabras: "+logicaJuegoDePalabras.getPalabrasAcertadas());
-						identificadorTerminarSerie = 0;
-						logicaJuegoDePalabras.perderTerminarSerie(identificadorTerminarSerie);
-						comparacion = 0;
-						if(logicaJuegoDePalabras.getAciertos() == 0) {
-							archivosJuegoDePalabras.getPalabras().clear();
-							archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-						}
-					}					
-				}
-
-				if(identificadorTerminarSerie == 2) {
-					if(comparacion == 0) {
-						JOptionPane.showMessageDialog(null, "¡Perdiste! Palabras: "+logicaJuegoDePalabras.getPalabrasAcertadas());
-						logicaJuegoDePalabras.perderTerminarSerie(1);
-						identificadorTerminarSerie = 0;
-						if(logicaJuegoDePalabras.getAciertos() == 0) {
-							archivosJuegoDePalabras.getPalabras().clear();
-							archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-						}
-					}
-				}
-				archivosJuegoDePalabras.getPalabras().clear();
-				archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-				
-				archivosJuegoDePalabras.getPalabrasUsuario().clear();
-				archivosJuegoDePalabras.escribirArchivo(tfEscrituraParaUsuario.getText(),"palabrasUsuario");
-				tfEscrituraParaUsuario.setText("");
-				taPalabrasRecordadas.setText(archivosJuegoDePalabras.leerUsuario("palabrasUsuario"));
-				
-				tfAciertos.setText(String.valueOf(logicaJuegoDePalabras.getAciertos()));
-				tfFallos.setText(String.valueOf(logicaJuegoDePalabras.getFallos()));
-				tfNivel.setText(String.valueOf(logicaJuegoDePalabras.getNivel()));
-				tfSerie.setText(String.valueOf(logicaJuegoDePalabras.getSerie()));
-				
-				//System.out.println(gestorArchivos.getPalabras().size());
-				for(int i=0;i<archivosJuegoDePalabras.getPalabras().size();i++) {				
-					System.out.println(archivosJuegoDePalabras.getPalabras().get(i));
-				}
-			}
-			if(e.getSource() == timer) {
-			
-				if(e.getSource() == timer) {				
-					lPalabraAMostrar.setText(archivosJuegoDePalabras.getPalabras().get(mostrarPalabra).toUpperCase());
-					if(mostrarPalabra != archivosJuegoDePalabras.getPalabras().size()-1) {
-							mostrarPalabra++;
-							if(mostrarPalabra == archivosJuegoDePalabras.getPalabras().size()-1) {
-								mostrarPalabra=+mostrarPalabra;
-							}
-					}
-					else {
-						contador++;
-						if(contador == 2) {
-							lPalabraAMostrar.setText("");
-							tfEscrituraParaUsuario.setEditable(true);;
-							contador+=contador;
-							timer.stop();
-							contador=0;
-						}
-					}
-				}
-			}
-		}
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-				//palabras.setText(gestorArchivos.getPalabras().get(0).toUpperCase());
-				archivosJuegoDePalabras.getPalabrasUsuario().clear();
-				archivosJuegoDePalabras.escribirArchivo(tfEscrituraParaUsuario.getText(),"palabrasUsuario");
-				taPalabrasRecordadas.setText(archivosJuegoDePalabras.leerUsuario("palabrasUsuario"));
-
-				if(compararPalabras()) {
-					indice = logicaJuegoDePalabras.indiceElemento(archivosJuegoDePalabras.getPalabras(), tfEscrituraParaUsuario.getText().toLowerCase());
-					archivosJuegoDePalabras.getPalabras().remove(indice);
-					tfEscrituraParaUsuario.setText("");
-					logicaJuegoDePalabras.progreso();
-					comparacion++;
-					System.out.println("comparaciones:"+comparacion);
-					if(logicaJuegoDePalabras.condicionPerder(comparacion)) {
-						System.out.println("Entró");
-						System.out.println("palabras: "+logicaJuegoDePalabras.getPalabrasAcertadas());
-						logicaJuegoDePalabras.pasarNivel();
-						logicaJuegoDePalabras.perderTerminarSerie(identificadorTerminarSerie);
-						mostrarPalabra = 0;
-						timer.restart();
-						tfEscrituraParaUsuario.setEditable(false);			
-						comparacion = 0;
-						identificadorTerminarSerie = 0;
-						if(logicaJuegoDePalabras.getAciertos() == 0) {
-							archivosJuegoDePalabras.getPalabras().clear();
-							archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-						}
-					}
-					if(logicaJuegoDePalabras.getAciertos() == 0) {
-						archivosJuegoDePalabras.getPalabras().clear();
-						archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-					}
-				}
-				else {
-					tfEscrituraParaUsuario.setText("");
-					logicaJuegoDePalabras.fallos();
-
-					if(logicaJuegoDePalabras.getFallos() == 0) {
-						mostrarPalabra = 0;
-						timer.restart();
-						archivosJuegoDePalabras.getPalabras().clear();
-						archivosJuegoDePalabras.AbrirArchivo(logicaJuegoDePalabras.getNivel(), logicaJuegoDePalabras.getSerie());
-					}
-				}
-				System.out.println(logicaJuegoDePalabras.getNivel());
-				System.out.println(logicaJuegoDePalabras.getSerie());
-				System.out.println(logicaJuegoDePalabras.getPalabrasAcertadas());
-				
-				for(int i=0;i<archivosJuegoDePalabras.getPalabras().size();i++) {				
-					System.out.println(archivosJuegoDePalabras.getPalabras().get(i));
-				}
-				tfAciertos.setText(String.valueOf(logicaJuegoDePalabras.getAciertos()));
-				tfFallos.setText(String.valueOf(logicaJuegoDePalabras.getFallos()));
-				tfNivel.setText(String.valueOf(logicaJuegoDePalabras.getNivel()));
-				tfSerie.setText(String.valueOf(logicaJuegoDePalabras.getSerie()));
-			}
-		} 
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		
+		
 		
 	}
 
