@@ -2,10 +2,14 @@ package juegoDePalabras;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class GestorDeArchivosJuegoDePalabras {
@@ -15,6 +19,11 @@ public class GestorDeArchivosJuegoDePalabras {
 	private FileWriter fileWriter,vaciar;
 	private BufferedWriter output,output2;
 	private ArrayList<String> palabras,palabrasUsuario;
+	
+	private FileInputStream fileInputStream;
+	private ObjectInputStream inputStream;
+	private FileOutputStream fileOutputStream;
+	private ObjectOutputStream outputStream;
 
 	public GestorDeArchivosJuegoDePalabras() {
 		palabras = new ArrayList<String>();
@@ -135,6 +144,50 @@ public class GestorDeArchivosJuegoDePalabras {
 			}
 		}
 	}
+	
+	public void serializarObjeto(Integer nivel, String archivo) {
+		
+		try {
+			fileOutputStream = new FileOutputStream("src/archivos/"+archivo);
+			outputStream = new ObjectOutputStream(fileOutputStream);
+			
+			outputStream.writeObject(nivel);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				output.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public Integer deserializarObjeto(String archivo) {
+		Integer nivel = null;
+		
+		try {
+			fileInputStream = new FileInputStream("src/archivos/"+archivo);
+			inputStream = new ObjectInputStream(fileInputStream);
+			
+			nivel = (Integer)inputStream.readObject();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return nivel;
+	}
+	
+	
 
 	public ArrayList<String> getPalabras() {
 		return palabras;

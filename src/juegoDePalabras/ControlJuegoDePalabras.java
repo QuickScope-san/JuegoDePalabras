@@ -147,7 +147,7 @@ public class ControlJuegoDePalabras {
 	
 	public void terminarSerieNivel() {
 		if(serie == 1) {
-			serie = 2; aciertos = 0; fallos = 0;
+			serie = 2; aciertos = 0;
 		}
 		else {
 			pasarNivel();
