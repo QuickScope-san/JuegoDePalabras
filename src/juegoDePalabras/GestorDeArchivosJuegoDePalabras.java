@@ -102,7 +102,7 @@ public class GestorDeArchivosJuegoDePalabras {
 				e.printStackTrace();
 			}
 		}
-		return salida;
+		return salida.toLowerCase();
 		
 	}
 	
