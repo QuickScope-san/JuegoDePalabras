@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -113,7 +114,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		//Create Escucha and other components
 		escuchas = new Escucha();
 		timer = new Timer(2000,escuchas);
-		vistaGUI=this;
+		vistaGUI = this;
 		newVista = new JFrame();
 
 		//Creacion de Label's.
@@ -180,8 +181,6 @@ public class GuiJuegoDePalabras extends JFrame {
 		bEstadisticas.addActionListener(escuchas);
 		bSalir.addActionListener(escuchas);
 
-		
-		tfEscrituraParaUsuario.setBorder(new TitledBorder("Escribir"));
 		//Creacion del gestor de diseño del JFrame.
 		contenedorJFrame = getContentPane();
 		
@@ -211,6 +210,27 @@ public class GuiJuegoDePalabras extends JFrame {
 		
 		//Agregacion del panel de juego al contenedor principical del JFrame.
 		contenedorJFrame.add(fondoGame, BorderLayout.CENTER);
+		
+		//Objetos auxiliares en la GUI.
+		TitledBorder tituloPalabras = BorderFactory.createTitledBorder(BorderFactory.createLineBorder
+				(new Color(255, 255, 255), 5), "Palabras a Adivinar:", 
+				TitledBorder.CENTER, TitledBorder.TOP, new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 20),
+				new Color(255, 255, 255));
+		
+		TitledBorder tituloAreaPalabras = BorderFactory.createTitledBorder(BorderFactory.createLineBorder
+				(new Color(255, 255, 255), 5), "Palabras Adivinadas:", 
+				TitledBorder.CENTER, TitledBorder.TOP, new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 20),
+				new Color(255, 255, 255));
+		
+		TitledBorder tituloSerieNivel = BorderFactory.createTitledBorder(BorderFactory.createLineBorder
+				(new Color(255, 255, 255), 5), "Informacion Partida:", 
+				TitledBorder.CENTER, TitledBorder.TOP, new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 20),
+				new Color(255, 255, 255));
+		
+		TitledBorder tituloEscribir = BorderFactory.createTitledBorder(BorderFactory.createLineBorder
+				(new Color(255, 255, 255), 5), "Escribe Las Palabras Aqui:", 
+				TitledBorder.CENTER, TitledBorder.TOP, new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 20),
+				new Color(255, 255, 255));
 		
 		//Agregacion de componentes a paneles.
 		
@@ -252,16 +272,16 @@ public class GuiJuegoDePalabras extends JFrame {
 		pInfoPartida.add(pAuxInfoPartida);
 		pInfoPartida.setBackground(new Color(0, 0, 0, 150));
 		pInfoPartida.setPreferredSize(new Dimension(860, 220));
-		pInfoPartida.setBorder(new TitledBorder("Palabras"));
+		pInfoPartida.setBorder(tituloPalabras);
 		pPalabraAcertada.add(pInfoPartida);
 		pPalabraAcertada.setOpaque(false);
 		fondoGame.add(pPalabraAcertada, BorderLayout.NORTH);
 		
-		taPalabrasRecordadas.setPreferredSize(new Dimension(645, 500));
+		taPalabrasRecordadas.setPreferredSize(new Dimension(600, 300));
 		taPalabrasRecordadas.setBackground(new Color(0, 0, 0, 0));
 		taPalabrasRecordadas.setForeground(new Color(255, 255, 255));
-		taPalabrasRecordadas.setBorder(new TitledBorder("Palabras del Usuario"));
 		taPalabrasRecordadas.setEditable(false);
+		taPalabrasRecordadas.setBorder(tituloAreaPalabras);
 		spDeslizable.setBackground(new Color(0, 0, 0, 150));
 		spDeslizable.setForeground(new Color(255, 255, 255));
 		pTextArea.add(spDeslizable);
@@ -276,17 +296,20 @@ public class GuiJuegoDePalabras extends JFrame {
 		pAuxInfoGameNivelTf.add(lNivel); pAuxInfoGameNivelTf.add(tfNivel);
 		
 		pInfoGame.add(pAuxInfoGameSerieTf, BorderLayout.NORTH); pInfoGame.add(pAuxInfoGameNivelTf, BorderLayout.CENTER);
-		pInfoGame.setPreferredSize(new Dimension(200, 120));
+		pInfoGame.setPreferredSize(new Dimension(250, 150));
 		pInfoGame.setBackground(new Color(0, 0, 0, 250));
+		pInfoGame.setBorder(tituloSerieNivel);
 		pAuxInfoGame.add(pInfoGame);
 		pAuxInfoGame.setOpaque(false);
 		fondoGame.add(pAuxInfoGame, BorderLayout.EAST);
 		
 		tfEscrituraParaUsuario.setPreferredSize(new Dimension(527, 70));
 		tfEscrituraParaUsuario.setBackground(new Color(0,0,0,250));
-		tfEscrituraParaUsuario.setFont(new Font(Font.MONOSPACED, Font.BOLD+Font.ITALIC, 25));
-		tfEscrituraParaUsuario.setForeground(Color.white);
+		tfEscrituraParaUsuario.setFont(new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 25));
+		tfEscrituraParaUsuario.setForeground(new Color(255, 255, 255, 100));
 		tfEscrituraParaUsuario.setEditable(false);
+		tfEscrituraParaUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		tfEscrituraParaUsuario.setBorder(tituloEscribir);
 		tfEscrituraParaUsuario.setText("Escribir aquí...");
 		
 		bTerminarSerie.setIcon(new ImageIcon(getClass().getResource("/imagenes/tiempoParcial.png")));
