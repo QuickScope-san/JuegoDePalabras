@@ -304,7 +304,7 @@ public class GuiJuegoDePalabras extends JFrame {
 		fondoGame.add(pAuxInfoGame, BorderLayout.EAST);
 		
 		tfEscrituraParaUsuario.setPreferredSize(new Dimension(527, 70));
-		tfEscrituraParaUsuario.setBackground(new Color(0,0,0,250));
+		tfEscrituraParaUsuario.setBackground(new Color(0, 0, 0, 250));
 		tfEscrituraParaUsuario.setFont(new Font(Font.SERIF, Font.BOLD+Font.ITALIC, 25));
 		tfEscrituraParaUsuario.setForeground(new Color(255, 255, 255, 100));
 		tfEscrituraParaUsuario.setEditable(false);
